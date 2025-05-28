@@ -6,7 +6,6 @@ namespace Ephemeral.Api
 	/// <summary>
 	/// Represents a database session used to query and save <see cref="Secret"/> instances.
 	/// </summary>
-	/// <param name="options">The options for this context.</param>
 	public class SecretDb(DbContextOptions<SecretDb> options) : DbContext(options)
 	{
 		public DbSet<Secret> Secrets => Set<Secret>();

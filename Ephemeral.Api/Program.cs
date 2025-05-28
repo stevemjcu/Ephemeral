@@ -12,10 +12,11 @@ builder.Services.AddDbContext<SecretDb>(opt => opt.UseInMemoryDatabase(databaseN
 var app = builder.Build();
 app.MapPut("/secrets", SetSecret);
 app.MapGet("/secrets/{id}", GetSecret);
-
 app.Run();
 
-// Conceal secret with specified ciphertext and time-to-live.
+[EndpointSummary("Conceal a secret")]
+[EndpointDescription("Set a secret with the specified ciphertext and time-to-live")]
+[Produces<Guid>()]
 static async Task<IResult> SetSecret(
 	[FromQuery(Name = "ciphertext")] string ciphertext,
 	[FromQuery(Name = "ttl")] int ttl,
@@ -30,7 +31,9 @@ static async Task<IResult> SetSecret(
 	return Results.Ok(task.Entity.Id);
 }
 
-// Reveal secret if still unread and unexpired.
+[EndpointSummary("Reveal a secret")]
+[EndpointDescription("Get a secret if it still exists and is unread and unexpired")]
+[Produces<string>()]
 static async Task<IResult> GetSecret(
 	[FromRoute] int id,
 	[FromServices] SecretDb db)
