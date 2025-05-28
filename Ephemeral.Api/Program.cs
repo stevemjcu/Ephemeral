@@ -1,15 +1,16 @@
-using Ephemeral.Api;
+using Ephemeral.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 const string databaseName = "Secrets";
+const int minLifetime = 0;
 const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 var connectionString = builder.Configuration.GetConnectionString(databaseName) ?? $"Data Source={databaseName}.db";
-builder.Services.AddSqlite<SecretDb>(connectionString);
-builder.Services.AddHostedService<CleanupHostedService>();
+builder.Services.AddSqlite<SecretService>(connectionString);
+builder.Services.AddHostedService<CleanupService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
@@ -23,9 +24,9 @@ app.Run();
 static async Task<IResult> SetSecret(
 	[FromQuery(Name = "ciphertext")] string ciphertext,
 	[FromQuery(Name = "ttl")] int ttl,
-	[FromServices] SecretDb db)
+	[FromServices] SecretService db)
 {
-	ttl = Math.Max(0, Math.Min(ttl, maxLifetime));
+	ttl = Math.Max(minLifetime, Math.Min(ttl, maxLifetime));
 
 	var secret = new Secret(ciphertext, TimeSpan.FromSeconds(ttl));
 	var task = await db.Secrets.AddAsync(secret);
@@ -39,7 +40,7 @@ static async Task<IResult> SetSecret(
 [Produces<string>()]
 static async Task<IResult> GetSecret(
 	[FromRoute] Guid id,
-	[FromServices] SecretDb db)
+	[FromServices] SecretService db)
 {
 	var secret = await db.Secrets.FindAsync(id);
 	if (secret is null) return Results.NotFound();

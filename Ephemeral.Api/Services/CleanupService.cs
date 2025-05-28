@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Ephemeral.Api
+namespace Ephemeral.Api.Services
 {
-	public class CleanupHostedService(IServiceProvider services) : BackgroundService, IDisposable
+	/// <summary>
+	/// Represents a recurring background job to clean up expired secrets.
+	/// </summary>
+	public class CleanupService(IServiceProvider services) : BackgroundService, IDisposable
 	{
 		private readonly IServiceProvider _services = services;
-		private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(1));
+		private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(5));
 		private bool _disposed;
 
 		protected async override Task ExecuteAsync(CancellationToken ct)
@@ -13,7 +16,7 @@ namespace Ephemeral.Api
 			while (await _timer.WaitForNextTickAsync(ct))
 			{
 				using var scope = _services.CreateScope();
-				var service = scope.ServiceProvider.GetRequiredService<SecretDb>();
+				var service = scope.ServiceProvider.GetRequiredService<SecretService>();
 				await service.Secrets.Where(s => s.Expiration < DateTime.UtcNow).ExecuteDeleteAsync(ct);
 			}
 		}

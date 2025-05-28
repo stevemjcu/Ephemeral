@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ephemeral.Api
+namespace Ephemeral.Api.Services
 {
 	/// <summary>
-	/// Represents a database session used to query and save <see cref="Secret"/> instances.
+	/// Represents a database session used to query and save secrets.
 	/// </summary>
-	public class SecretDb(DbContextOptions<SecretDb> options) : DbContext(options)
+	public class SecretService(DbContextOptions<SecretService> options) : DbContext(options)
 	{
 		public DbSet<Secret> Secrets => Set<Secret>();
 	}
