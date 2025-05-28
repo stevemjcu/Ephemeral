@@ -6,10 +6,14 @@ const string databaseName = "Secrets";
 const int minLifetime = 0;
 const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
+// Inject dependencies
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOpenApi();
 builder.Services.AddDbContext<SecretDb>(opt => opt.UseInMemoryDatabase(databaseName));
 
+// Configure endpoints
 var app = builder.Build();
+if (app.Environment.IsDevelopment()) app.MapOpenApi();
 app.MapPut("/secrets", SetSecret);
 app.MapGet("/secrets/{id}", GetSecret);
 app.Run();
