@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 var connectionString = builder.Configuration.GetConnectionString(databaseName) ?? $"Data Source={databaseName}.db";
 builder.Services.AddSqlite<SecretDb>(connectionString);
+builder.Services.AddHostedService<CleanupHostedService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
