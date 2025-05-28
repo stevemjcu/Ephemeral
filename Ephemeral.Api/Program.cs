@@ -19,7 +19,7 @@ app.MapGet("/secrets/{id}", GetSecret);
 app.Run();
 
 [EndpointSummary("Conceal a secret")]
-[EndpointDescription("Set a secret with the specified ciphertext and time-to-live")]
+[EndpointDescription("Sets a secret with the specified ciphertext and time-to-live")]
 [Produces<Guid>()]
 static async Task<IResult> SetSecret(
 	[FromQuery(Name = "ciphertext")] string ciphertext,
@@ -28,7 +28,7 @@ static async Task<IResult> SetSecret(
 {
 	ttl = Math.Max(minLifetime, Math.Min(ttl, maxLifetime));
 
-	var secret = new Secret(ciphertext, TimeSpan.FromMinutes(ttl));
+	var secret = new Secret(ciphertext, TimeSpan.FromSeconds(ttl));
 	var task = await db.Secrets.AddAsync(secret);
 	await db.SaveChangesAsync();
 
@@ -36,10 +36,10 @@ static async Task<IResult> SetSecret(
 }
 
 [EndpointSummary("Reveal a secret")]
-[EndpointDescription("Get a secret if it still exists and is unread and unexpired")]
+[EndpointDescription("Gets a secret if it still exists and is unexpired")]
 [Produces<string>()]
 static async Task<IResult> GetSecret(
-	[FromRoute] int id,
+	[FromRoute] Guid id,
 	[FromServices] SecretDb db)
 {
 	var secret = await db.Secrets.FindAsync(id);

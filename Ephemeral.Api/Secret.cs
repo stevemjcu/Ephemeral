@@ -16,8 +16,10 @@ namespace Ephemeral.Api
 	/// </summary>
 	public class Secret(string ciphertext, TimeSpan ttl)
 	{
-		[Key] public Guid Id { get; set; } = new();
-		public string Ciphertext { get; set; } = ciphertext;
-		public DateTime Expiration { get; set; } = DateTime.UtcNow + ttl;
+		[Key] public Guid Id { get; init; }
+		public string Ciphertext { get; init; } = ciphertext;
+		public DateTime Expiration { get; init; } = DateTime.UtcNow + ttl;
+
+		public Secret() : this(string.Empty, default) { }
 	}
 }
