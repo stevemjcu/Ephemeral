@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 const string databaseName = "Secrets";
 const int minLifetime = 0;
-const int maxLifetime = 60 * 60 * 24;
+const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<SecretDb>(opt => opt.UseInMemoryDatabase(databaseName));
@@ -23,7 +23,7 @@ static async Task<IResult> SetSecret(
 {
 	ttl = Math.Max(minLifetime, Math.Min(ttl, maxLifetime));
 
-	var secret = new Secret(ciphertext, TimeSpan.FromSeconds(ttl));
+	var secret = new Secret(ciphertext, TimeSpan.FromMinutes(ttl));
 	var task = await db.Secrets.AddAsync(secret);
 	await db.SaveChangesAsync();
 
@@ -36,11 +36,12 @@ static async Task<IResult> GetSecret(
 	[FromServices] SecretDb db)
 {
 	var secret = await db.Secrets.FindAsync(id);
-	if (secret is null || secret.IsRead || secret.Expiration < DateTime.UtcNow)
-		return Results.NotFound();
+	if (secret is null) return Results.NotFound();
 
-	secret.IsRead = true;
+	db.Secrets.Remove(secret);
 	await db.SaveChangesAsync();
 
-	return Results.Ok(secret.Ciphertext);
+	return secret.Expiration < DateTime.UtcNow
+		? Results.NotFound()
+		: Results.Ok(secret.Ciphertext);
 }

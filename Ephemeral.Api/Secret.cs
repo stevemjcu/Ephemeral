@@ -19,7 +19,6 @@ namespace Ephemeral.Api
 	{
 		[Key] public Guid Id { get; set; } = new();
 		public string Ciphertext { get; set; } = ciphertext;
-		public bool IsRead { get; set; } = false;
 		public DateTime Expiration { get; set; } = DateTime.UtcNow + ttl;
 	}
 }
