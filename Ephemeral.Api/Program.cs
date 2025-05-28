@@ -3,15 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 const string databaseName = "Secrets";
-const int minLifetime = 0;
 const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
-// Inject dependencies
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<SecretDb>(opt => opt.UseInMemoryDatabase(databaseName));
+var connectionString = builder.Configuration.GetConnectionString(databaseName) ?? $"Data Source={databaseName}.db";
+builder.Services.AddSqlite<SecretDb>(connectionString);
 
-// Configure endpoints
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
 app.MapPut("/secrets", SetSecret);
@@ -26,7 +24,7 @@ static async Task<IResult> SetSecret(
 	[FromQuery(Name = "ttl")] int ttl,
 	[FromServices] SecretDb db)
 {
-	ttl = Math.Max(minLifetime, Math.Min(ttl, maxLifetime));
+	ttl = Math.Max(0, Math.Min(ttl, maxLifetime));
 
 	var secret = new Secret(ciphertext, TimeSpan.FromSeconds(ttl));
 	var task = await db.Secrets.AddAsync(secret);
