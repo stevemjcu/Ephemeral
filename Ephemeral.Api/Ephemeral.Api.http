@@ -1,0 +1,12 @@
+﻿@Ephemeral.Api_HostAddress = https://localhost:7133
+
+@ciphertext = secret
+@ttl = 3600
+PUT {{Ephemeral.Api_HostAddress}}/secrets?ciphertext={{ciphertext}}&ttl={{ttl}}
+
+###
+
+@id = 7fdf8cdc-10a2-4b44-9e00-2c0f7f3ccd9d
+GET {{Ephemeral.Api_HostAddress}}/secrets/{{id}}
+
+###
