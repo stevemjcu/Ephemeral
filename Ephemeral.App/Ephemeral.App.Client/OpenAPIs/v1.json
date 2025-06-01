@@ -1,0 +1,93 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Ephemeral.Api | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:7133/"
+    }
+  ],
+  "paths": {
+    "/secrets": {
+      "put": {
+        "tags": [
+          "Ephemeral.Api"
+        ],
+        "summary": "Conceal a secret",
+        "description": "Sets a secret with the specified ciphertext and time-to-live",
+        "parameters": [
+          {
+            "name": "ciphertext",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ttl",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "uuid"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/secrets/{id}": {
+      "get": {
+        "tags": [
+          "Ephemeral.Api"
+        ],
+        "summary": "Reveal a secret",
+        "description": "Gets a secret if it still exists and is unexpired",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": { },
+  "tags": [
+    {
+      "name": "Ephemeral.Api"
+    }
+  ]
+}
