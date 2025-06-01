@@ -8,12 +8,14 @@ const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
-var connectionString = builder.Configuration.GetConnectionString(databaseName) ?? $"Data Source={databaseName}.db";
+
+var connectionString = builder.Configuration.GetConnectionString(databaseName);
 builder.Services.AddSqlite<SecretService>(connectionString);
 builder.Services.AddHostedService<CleanupService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
+
 app.MapPut("/secrets", SetSecret);
 app.MapGet("/secrets/{id}", GetSecret);
 app.Run();
