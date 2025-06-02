@@ -1,20 +1,25 @@
-﻿<div>
+﻿@inject IJSRuntime JSRuntime
+
+<div>
 	<label for="box">@Label</label><br>
-	<textarea id="box" name="box" rows="6" cols="50" disabled="@IsDisabled" @bind=Value></textarea><br>
-	<button type="button" disabled="@IsDisabled" @onclick="OnClick">@Action</button>
+	<textarea id="input" rows="6" cols="50" disabled="@IsDisabled" @bind=Value /><br>
+	<button id="submit" type="button" disabled="@IsDisabled" @onclick="OnSubmit">Submit</button>
+	<button id="copy" @onclick="OnCopy">Copy</button>
 </div>
 
 @code {
 	[Parameter] public string Label { get; set; } = "Label";
 	[Parameter] public string Value { get; set; } = string.Empty;
-	[Parameter] public string Action { get; set; } = "Action";
 	[Parameter] public required Func<string, Task<string>> Transform { get; set; }
 
 	private bool IsDisabled { get; set; } = false;
 
-	private async Task OnClick() 
+	private async Task OnSubmit()
 	{
 		Value = await Transform.Invoke(Value);
 		IsDisabled = true;
 	}
+
+	private async Task OnCopy() =>
+		await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", Value);
 }
