@@ -16,7 +16,7 @@ builder.Services.AddHostedService<CleanupService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
-app.MapPut("/secrets", SetSecret);
+app.MapPost("/secrets", SetSecret);
 app.MapGet("/secrets/{id}", GetSecret);
 app.Run();
 

@@ -11,7 +11,7 @@
   ],
   "paths": {
     "/secrets": {
-      "put": {
+      "post": {
         "tags": [
           "Ephemeral.Api"
         ],
