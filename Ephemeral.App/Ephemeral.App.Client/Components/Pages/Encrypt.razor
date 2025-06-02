@@ -1,0 +1,18 @@
+﻿@page "/"
+
+<PageTitle>Encrypt Secret</PageTitle>
+
+<Submission 
+	Label="Encrypt a secret to get a single-use link:" 
+	Action="Encrypt"
+	Transform=Transform />
+
+@code {
+	private async Task<string> Transform(string s)
+	{
+		// Encrypt string
+		// Send to server
+		// Construct and return link
+		return "https://...";
+	}
+}
