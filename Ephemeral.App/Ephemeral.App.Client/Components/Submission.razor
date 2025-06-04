@@ -10,13 +10,13 @@
 @code {
 	[Parameter] public string Label { get; set; } = "Label";
 	[Parameter] public string Value { get; set; } = string.Empty;
-	[Parameter] public required Func<string, Task<string>> Transform { get; set; }
+	[Parameter] public required Func<string, Task<string>> Action { get; set; }
 
 	private bool IsDisabled { get; set; } = false;
 
 	private async Task OnSubmit()
 	{
-		Value = await Transform.Invoke(Value);
+		Value = await Action.Invoke(Value);
 		IsDisabled = true;
 	}
 

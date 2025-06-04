@@ -1,17 +1,20 @@
 ﻿@page "/"
+@inject IServiceProvider Services
+@inject NavigationManager NavigationManager
 
 <PageTitle>Encrypt Secret</PageTitle>
 
-<Submission 
-	Label="Encrypt a secret to get a single-use link." 
-	Transform=Transform />
+<Submission Label="Encrypt a secret to get a single-use link." Action=Action />
 
 @code {
-	private async Task<string> Transform(string s)
+	private async Task<string> Action(string s)
 	{
-		// Encrypt string
-		// Send to server
-		// Construct and return link
-		return "https://...";
+		// TODO: Encrypt string and append decryption key to URI
+
+		var service = Services.GetService<EphemeralService>()!;
+		var guid = await service.SecretsPOSTAsync(s, 60);
+		var uri = new Uri(new(NavigationManager.BaseUri), guid.ToString());
+
+		return uri.ToString();
 	}
 }

@@ -7,17 +7,29 @@ const int minLifetime = 0;
 const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddOpenApi();
 
 var connectionString = builder.Configuration.GetConnectionString(databaseName);
+var frontendUri = builder.Configuration["FrontendUri"]!;
+
+builder.Services.AddCors(
+	options => options.AddDefaultPolicy(
+		policy => policy
+			.WithOrigins(frontendUri)
+			.AllowAnyMethod()
+			.AllowAnyHeader()));
+
+builder.Services.AddOpenApi();
 builder.Services.AddSqlite<SecretService>(connectionString);
 builder.Services.AddHostedService<CleanupService>();
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
+app.UseCors();
+
+if (app.Environment.IsDevelopment()) app.MapOpenApi();
 app.MapPost("/secrets", SetSecret);
 app.MapGet("/secrets/{id}", GetSecret);
+
 app.Run();
 
 [EndpointSummary("Conceal a secret")]
