@@ -2,7 +2,7 @@ using Ephemeral.App.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-var backendUri = builder.Configuration["BackendUri"] ?? "https://localhost:7133";
+var backendUri = builder.Configuration["BackendUri"]!;
 
 builder.Services.AddScoped(sp =>
 	new EphemeralService(new()
