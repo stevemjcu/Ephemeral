@@ -5,13 +5,13 @@ namespace Ephemeral.Api.Services
 	/// <summary>
 	/// Represents an ongoing background job to clean up expired secrets.
 	/// </summary>
-	public class CleanupService(IServiceProvider services) : BackgroundService
+	public class CleanupService(IServiceProvider services, TimeSpan interval) : BackgroundService
 	{
 		private readonly IServiceProvider _services = services;
 
 		protected async override Task ExecuteAsync(CancellationToken ct)
 		{
-			using var timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
+			using var timer = new PeriodicTimer(interval);
 
 			while (await timer.WaitForNextTickAsync(ct))
 			{

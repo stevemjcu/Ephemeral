@@ -2,7 +2,7 @@
 
 @ciphertext = secret
 @ttl = 3600
-PUT {{Ephemeral.Api_HostAddress}}/secrets?ciphertext={{ciphertext}}&ttl={{ttl}}
+POST {{Ephemeral.Api_HostAddress}}/secrets?ciphertext={{ciphertext}}&ttl={{ttl}}
 
 ###
 

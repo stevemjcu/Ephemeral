@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inject IServiceProvider Services
 @inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
 
 <PageTitle>Encrypt Secret</PageTitle>
 
@@ -11,8 +12,10 @@
 	{
 		// TODO: Encrypt string and append decryption key to URI
 
+		var ttl = int.Parse(Configuration["DefaultLifetimeSeconds"]!);
+
 		var service = Services.GetService<EphemeralService>()!;
-		var guid = await service.SecretsPOSTAsync(s, 60);
+		var guid = await service.SecretsPOSTAsync(s, ttl);
 		var uri = new Uri(new(NavigationManager.BaseUri), guid.ToString());
 
 		return uri.ToString();

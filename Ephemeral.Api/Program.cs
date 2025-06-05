@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString(databaseName);
 var frontendUri = builder.Configuration["FrontendUri"]!;
+var cleanupInterval = TimeSpan.FromSeconds(int.Parse(builder.Configuration["CleanupIntervalSeconds"]!));
 
 builder.Services.AddCors(
 	options => options.AddDefaultPolicy(
@@ -20,7 +21,7 @@ builder.Services.AddCors(
 
 builder.Services.AddOpenApi();
 builder.Services.AddSqlite<SecretService>(connectionString);
-builder.Services.AddHostedService<CleanupService>();
+builder.Services.AddHostedService(provider => new CleanupService(provider, cleanupInterval));
 
 var app = builder.Build();
 
