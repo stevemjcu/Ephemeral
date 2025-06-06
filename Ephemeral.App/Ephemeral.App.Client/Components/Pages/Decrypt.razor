@@ -1,0 +1,31 @@
+﻿@page "/decrypt/{id}"
+@inject IServiceProvider Services
+@inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
+
+<PageTitle>Decrypt Secret</PageTitle>
+
+<Submission Label="Decrypt the secret to view its contents." Value=@Ciphertext Action=DecryptString />
+
+@code {
+	[Parameter] public required string Id { get; set; }
+
+	private string Ciphertext { get; set; } = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		// TODO: Cache result
+
+		using var scope = Services.CreateScope();
+		var service = scope.ServiceProvider.GetRequiredService<EphemeralService>();
+
+		Ciphertext = await service.SecretsGETAsync(new(Id));
+	}
+
+	private async Task<string> DecryptString(string ciphertext)
+	{
+		// TODO: Decrypt string
+
+		return ciphertext;
+	}
+}

@@ -5,18 +5,20 @@
 
 <PageTitle>Encrypt Secret</PageTitle>
 
-<Submission Label="Encrypt a secret to get a single-use link." Action=Action />
+<Submission Label="Encrypt a secret to get a single-use link." Action=EncryptString />
 
 @code {
-	private async Task<string> Action(string s)
+	private int DefaultLifetimeSeconds => int.Parse(Configuration["DefaultLifetimeSeconds"]!);
+
+	private async Task<string> EncryptString(string plaintext)
 	{
-		// TODO: Encrypt string and append decryption key to URI
+		// TODO: Encrypt string
 
-		var ttl = int.Parse(Configuration["DefaultLifetimeSeconds"]!);
+		using var scope = Services.CreateScope();
+		var service = scope.ServiceProvider.GetRequiredService<EphemeralService>();
 
-		var service = Services.GetService<EphemeralService>()!;
-		var guid = await service.SecretsPOSTAsync(s, ttl);
-		var uri = new Uri(new(NavigationManager.BaseUri), guid.ToString());
+		var id = await service.SecretsPOSTAsync(plaintext, DefaultLifetimeSeconds);
+		var uri = new Uri(new(new(NavigationManager.BaseUri), "/decrypt/"), id.ToString());
 
 		return uri.ToString();
 	}

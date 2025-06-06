@@ -65,5 +65,5 @@ static async Task<IResult> GetSecret(
 
 	return secret.Expiration < DateTime.UtcNow
 		? Results.NotFound()
-		: Results.Ok(secret.Ciphertext);
+		: Results.Content(secret.Ciphertext);
 }
