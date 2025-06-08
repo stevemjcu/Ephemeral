@@ -1,23 +1,20 @@
 ﻿@page "/"
-@inject IServiceProvider Services
+@inject EphemeralService Service
 @inject NavigationManager NavigationManager
 @inject IConfiguration Configuration
 
 <PageTitle>Encrypt Secret</PageTitle>
 
-<Submission Label="Encrypt a secret to get a single-use link." Action=EncryptString />
+<Submission Label="Encrypt a secret to get a single-use link." Action=Action />
 
 @code {
 	private int DefaultLifetimeSeconds => int.Parse(Configuration["DefaultLifetimeSeconds"]!);
 
-	private async Task<string> EncryptString(string plaintext)
+	private async Task<string> Action(string value)
 	{
 		// TODO: Encrypt string
 
-		using var scope = Services.CreateScope();
-		var service = scope.ServiceProvider.GetRequiredService<EphemeralService>();
-
-		var id = await service.SecretsPOSTAsync(plaintext, DefaultLifetimeSeconds);
+		var id = await Service.SecretsPOSTAsync(value, DefaultLifetimeSeconds);
 		var uri = new Uri(new(new(NavigationManager.BaseUri), "/decrypt/"), id.ToString());
 
 		return uri.ToString();
