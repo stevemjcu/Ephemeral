@@ -5,7 +5,7 @@ namespace Ephemeral.Api.Services
 	/// <summary>
 	/// Represents an ongoing background job to clean up expired secrets.
 	/// </summary>
-	public class CleanupService(IServiceProvider services, TimeSpan interval) : BackgroundService
+	public class CleanupJob(IServiceProvider services, TimeSpan interval) : BackgroundService
 	{
 		private readonly IServiceProvider _services = services;
 
@@ -16,7 +16,7 @@ namespace Ephemeral.Api.Services
 			while (await timer.WaitForNextTickAsync(ct))
 			{
 				using var scope = _services.CreateScope();
-				var db = scope.ServiceProvider.GetRequiredService<SecretService>();
+				var db = scope.ServiceProvider.GetRequiredService<SecretDatabase>();
 				await db.Secrets.Where(s => s.Expiration < DateTime.UtcNow).ExecuteDeleteAsync(ct);
 			}
 		}

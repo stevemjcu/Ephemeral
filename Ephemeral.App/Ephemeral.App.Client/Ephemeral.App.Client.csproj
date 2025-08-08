@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.6.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="7.0.2">
       <PrivateAssets>all</PrivateAssets>
@@ -22,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="OpenAPIs\v1.json" ClassName="EphemeralService">
+    <OpenApiReference Include="OpenAPIs\v1.json" ClassName="EphemeralApi">
       <SourceUri>https://localhost:7133/openapi/v1.json</SourceUri>
     </OpenApiReference>
   </ItemGroup>

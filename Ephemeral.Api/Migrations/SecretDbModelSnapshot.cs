@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ephemeral.Api.Migrations
 {
-    [DbContext(typeof(SecretService))]
+    [DbContext(typeof(SecretDatabase))]
     partial class SecretDbModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

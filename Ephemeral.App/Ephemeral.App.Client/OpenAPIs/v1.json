@@ -23,11 +23,12 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "byte"
             }
           },
           {
-            "name": "ttl",
+            "name": "lifetime",
             "in": "query",
             "required": true,
             "schema": {
@@ -73,9 +74,10 @@
           "200": {
             "description": "OK",
             "content": {
-              "text/plain": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "type": "string",
+                  "format": "byte"
                 }
               }
             }

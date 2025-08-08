@@ -6,7 +6,7 @@ namespace Ephemeral.Api.Services
 	/// <summary>
 	/// Represents a database session used to query and save secrets.
 	/// </summary>
-	public class SecretService(DbContextOptions<SecretService> options) : DbContext(options)
+	public class SecretDatabase(DbContextOptions<SecretDatabase> options) : DbContext(options)
 	{
 		public DbSet<Secret> Secrets => Set<Secret>();
 	}
@@ -14,12 +14,12 @@ namespace Ephemeral.Api.Services
 	/// <summary>
 	/// Represents a single-use and self-destructing secret.
 	/// </summary>
-	public class Secret(string ciphertext, TimeSpan ttl)
+	public class Secret(byte[] data, TimeSpan lifetime)
 	{
 		[Key] public Guid Id { get; init; }
-		public string Ciphertext { get; init; } = ciphertext;
-		public DateTime Expiration { get; init; } = DateTime.UtcNow + ttl;
+		public DateTime Expiration { get; init; } = DateTime.UtcNow + lifetime;
+		public byte[] Data { get; init; } = data;
 
-		public Secret() : this(string.Empty, default) { }
+		public Secret() : this([], default) { }
 	}
 }

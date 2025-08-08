@@ -1,5 +1,6 @@
 ﻿@page "/"
-@inject EphemeralService Service
+@using System.Text
+@inject EphemeralApi Api
 @inject NavigationManager NavigationManager
 @inject IConfiguration Configuration
 
@@ -10,13 +11,19 @@
 @code {
 	private int DefaultLifetimeSeconds => int.Parse(Configuration["DefaultLifetimeSeconds"]!);
 
-	private async Task<string> Action(string value)
+	private async Task<string> Action(string input)
 	{
-		// TODO: Encrypt string
+		var key = Crypto.GenerateKey();
+		var output = Crypto.Encrypt(Encoding.UTF8.GetBytes(input), key); // UTF8 encoded
 
-		var id = await Service.SecretsPOSTAsync(value, DefaultLifetimeSeconds);
-		var uri = new Uri(new(new(NavigationManager.BaseUri), "/decrypt/"), id.ToString());
+		var id = await Api.SecretsPOSTAsync(output, DefaultLifetimeSeconds);
 
-		return uri.ToString();
+		var builder = new UriBuilder()
+		{
+			Host = NavigationManager.BaseUri,
+			Path = $"/decrypt/{id}",
+			Fragment = Convert.ToBase64String(key), // Base64 encoded
+		};
+		return builder.Uri.ToString();
 	}
 }

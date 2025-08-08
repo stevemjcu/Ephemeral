@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ephemeral.Api.Migrations
 {
-    [DbContext(typeof(SecretService))]
+    [DbContext(typeof(SecretDatabase))]
     [Migration("20250528035923_InitialCreate")]
     partial class InitialCreate
     {

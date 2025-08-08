@@ -1,26 +1,26 @@
 ﻿@page "/decrypt/{id}"
-@inject EphemeralService Service
+@using System.Text
+@inject EphemeralApi Api
 @inject NavigationManager NavigationManager
-@inject IConfiguration Configuration
 
 <PageTitle>Decrypt Secret</PageTitle>
 
-<Submission Label="Decrypt the secret to view its contents." Value=@Ciphertext Action=Action />
+<Submission Label="Decrypt the secret to view its contents." Value=... Action=Action />
 
 @code {
 	[Parameter] public required string Id { get; set; }
 
-	private string Ciphertext { get; set; } = string.Empty;
+	private string Secret { get; set; } = string.Empty;
 
 	protected override async Task OnInitializedAsync()
 	{
-		Ciphertext = await Service.SecretsGETAsync(new(Id));
+		var data = await Api.SecretsGETAsync(new(Id));
+		var key = Convert.FromBase64String(new Uri(NavigationManager.Uri).Fragment);
+
+		Secret = Encoding.UTF8.GetString(Crypto.Decrypt(data, key));
 	}
 
-	private async Task<string> Action(string value)
-	{
-		// TODO: Decrypt string
-
-		return value;
-	}
+#pragma warning disable 1998
+	private async Task<string> Action(string _) => Secret;
+#pragma warning restore 1998
 }
