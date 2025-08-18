@@ -23,8 +23,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "byte"
+              "type": "string"
             }
           },
           {
@@ -74,10 +73,9 @@
           "200": {
             "description": "OK",
             "content": {
-              "application/json": {
+              "text/plain": {
                 "schema": {
-                  "type": "string",
-                  "format": "byte"
+                  "type": "string"
                 }
               }
             }

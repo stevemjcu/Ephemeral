@@ -5,7 +5,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 var backendUri = new Uri(builder.Configuration["BackendUri"]!);
 
 builder.Services.AddScoped(sp =>
-	new EphemeralApi(new()
+	new Api(new()
 	{
 		BaseAddress = backendUri
 	}));

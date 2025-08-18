@@ -1,26 +1,20 @@
 ﻿@page "/decrypt/{id}"
 @using System.Text
-@inject EphemeralApi Api
+@inject Api Api
 @inject NavigationManager NavigationManager
 
 <PageTitle>Decrypt Secret</PageTitle>
 
-<Submission Label="Decrypt the secret to view its contents." Value=... Action=Action />
+<Submission Label="Decrypt the secret to view its contents." Value=... Action=DecryptSecret />
 
 @code {
 	[Parameter] public required string Id { get; set; }
 
-	private string Secret { get; set; } = string.Empty;
-
-	protected override async Task OnInitializedAsync()
+	private async Task<string> DecryptSecret(string _)
 	{
 		var data = await Api.SecretsGETAsync(new(Id));
-		var key = Convert.FromBase64String(new Uri(NavigationManager.Uri).Fragment);
+		var key = Convert.FromBase64String(new Uri(NavigationManager.Uri).Fragment[1..]);
 
-		Secret = Encoding.UTF8.GetString(Crypto.Decrypt(data, key));
+		return data; /* Encoding.UTF8.GetString(Crypto.Decrypt(data, key)); */
 	}
-
-#pragma warning disable 1998
-	private async Task<string> Action(string _) => Secret;
-#pragma warning restore 1998
 }

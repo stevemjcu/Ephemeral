@@ -7,7 +7,6 @@ const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("Secrets");
 var frontendUri = builder.Configuration["FrontendUri"]!;
 var cleanupInterval = TimeSpan.FromSeconds(int.Parse(builder.Configuration["CleanupIntervalSeconds"]!));
 
@@ -19,7 +18,7 @@ builder.Services.AddCors(
 			.AllowAnyHeader()));
 
 builder.Services.AddOpenApi();
-builder.Services.AddSqlite<SecretDatabase>(connectionString);
+builder.Services.AddDbContext<SecretDb>(options => options.UseInMemoryDatabase("Secrets"));
 builder.Services.AddHostedService(provider => new SecretCleanupJob(provider, cleanupInterval));
 
 var app = builder.Build();
@@ -36,25 +35,25 @@ app.Run();
 [EndpointDescription("Sets a secret with the specified ciphertext and time-to-live")]
 [Produces<Guid>()]
 static async Task<IResult> SetSecret(
-	[FromQuery(Name = "ciphertext")] byte[] ciphertext,
+	[FromQuery(Name = "ciphertext")] string ciphertext,
 	[FromQuery(Name = "lifetime")] int lifetime,
-	[FromServices] SecretDatabase database)
+	[FromServices] SecretDb database)
 {
 	lifetime = Math.Max(minLifetime, Math.Min(lifetime, maxLifetime));
 
 	var secret = new Secret(ciphertext, TimeSpan.FromSeconds(lifetime));
-	var task = await database.Secrets.AddAsync(secret);
+	var entry = await database.Secrets.AddAsync(secret);
 	await database.SaveChangesAsync();
 
-	return Results.Ok(task.Entity.Id);
+	return Results.Ok(entry.Entity.Id);
 }
 
 [EndpointSummary("Reveal a secret")]
 [EndpointDescription("Gets a secret if it still exists and is unexpired")]
-[Produces<byte[]>()]
+[Produces<string>()]
 static async Task<IResult> GetSecret(
 	[FromRoute] Guid id,
-	[FromServices] SecretDatabase database)
+	[FromServices] SecretDb database)
 {
 	var secret = await database.Secrets.FindAsync(id);
 	if (secret is null) return Results.NotFound();

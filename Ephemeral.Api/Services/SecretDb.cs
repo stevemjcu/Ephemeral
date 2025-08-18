@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Ephemeral.Api.Services
 {
 	/// <summary>
-	/// Represents a database session used to query and save secrets.
+	/// Represents a database connection used to query and save secrets.
 	/// </summary>
-	public class SecretDatabase(DbContextOptions<SecretDatabase> options) : DbContext(options)
+	public class SecretDb(DbContextOptions<SecretDb> options) : DbContext(options)
 	{
 		public DbSet<Secret> Secrets => Set<Secret>();
 	}
@@ -14,14 +14,14 @@ namespace Ephemeral.Api.Services
 	/// <summary>
 	/// Represents an expiring secret.
 	/// </summary>
-	public class Secret(byte[] data, TimeSpan lifetime)
+	public class Secret(string data, TimeSpan lifetime)
 	{
 		[Key] public Guid Id { get; init; }
 
 		public DateTime Expiration { get; init; } = DateTime.UtcNow + lifetime;
 
-		public byte[] Data { get; init; } = data;
+		public string Data { get; init; } = data;
 
-		public Secret() : this([], default) { }
+		public Secret() : this(string.Empty, default) { }
 	}
 }

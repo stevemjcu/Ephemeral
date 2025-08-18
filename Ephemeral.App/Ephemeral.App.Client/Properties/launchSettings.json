@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Ephemeral.App.Client": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

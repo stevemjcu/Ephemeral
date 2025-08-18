@@ -1,28 +1,26 @@
 ﻿@page "/"
 @using System.Text
-@inject EphemeralApi Api
+@inject Api Api
 @inject NavigationManager NavigationManager
 @inject IConfiguration Configuration
 
 <PageTitle>Encrypt Secret</PageTitle>
 
-<Submission Label="Encrypt a secret to get a single-use link." Action=Action />
+<Submission Label="Encrypt a secret to get a single-use link." Action=EncryptSecret />
 
 @code {
 	private int DefaultLifetimeSeconds => int.Parse(Configuration["DefaultLifetimeSeconds"]!);
 
-	private async Task<string> Action(string input)
+	private async Task<string> EncryptSecret(string plaintext)
 	{
 		var key = Crypto.GenerateKey();
-		var output = Crypto.Encrypt(Encoding.UTF8.GetBytes(input), key); // UTF8 encoded
+		var output = Crypto.Encrypt(Encoding.UTF8.GetBytes(plaintext), key);
+		var id = await Api.SecretsPOSTAsync(plaintext, DefaultLifetimeSeconds);
 
-		var id = await Api.SecretsPOSTAsync(output, DefaultLifetimeSeconds);
-
-		var builder = new UriBuilder()
+		var builder = new UriBuilder(NavigationManager.BaseUri)
 		{
-			Host = NavigationManager.BaseUri,
 			Path = $"/decrypt/{id}",
-			Fragment = Convert.ToBase64String(key), // Base64 encoded
+			Fragment = Convert.ToBase64String(key),
 		};
 		return builder.Uri.ToString();
 	}

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Ephemeral.Api.Services
+﻿namespace Ephemeral.Api.Services
 {
 	/// <summary>
 	/// Represents an ongoing background job to clean up expired secrets.
@@ -15,9 +13,9 @@ namespace Ephemeral.Api.Services
 
 			while (await timer.WaitForNextTickAsync(ct))
 			{
-				using var scope = _services.CreateScope();
-				var db = scope.ServiceProvider.GetRequiredService<SecretDatabase>();
-				await db.Secrets.Where(s => s.Expiration < DateTime.UtcNow).ExecuteDeleteAsync(ct);
+				//using var scope = _services.CreateScope();
+				//var db = scope.ServiceProvider.GetRequiredService<SecretDb>();
+				//await db.Secrets.Where(s => s.Expiration < DateTime.UtcNow).ExecuteDeleteAsync(ct);
 			}
 		}
 	}
