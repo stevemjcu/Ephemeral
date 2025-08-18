@@ -2,13 +2,12 @@ using Ephemeral.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-const string databaseName = "Secrets";
 const int minLifetime = 0;
 const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString(databaseName);
+var connectionString = builder.Configuration.GetConnectionString("Secrets");
 var frontendUri = builder.Configuration["FrontendUri"]!;
 var cleanupInterval = TimeSpan.FromSeconds(int.Parse(builder.Configuration["CleanupIntervalSeconds"]!));
 
@@ -21,7 +20,7 @@ builder.Services.AddCors(
 
 builder.Services.AddOpenApi();
 builder.Services.AddSqlite<SecretDatabase>(connectionString);
-builder.Services.AddHostedService(provider => new CleanupJob(provider, cleanupInterval));
+builder.Services.AddHostedService(provider => new SecretCleanupJob(provider, cleanupInterval));
 
 var app = builder.Build();
 

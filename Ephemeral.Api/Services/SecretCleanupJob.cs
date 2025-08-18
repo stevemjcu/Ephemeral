@@ -5,7 +5,7 @@ namespace Ephemeral.Api.Services
 	/// <summary>
 	/// Represents an ongoing background job to clean up expired secrets.
 	/// </summary>
-	public class CleanupJob(IServiceProvider services, TimeSpan interval) : BackgroundService
+	public class SecretCleanupJob(IServiceProvider services, TimeSpan interval) : BackgroundService
 	{
 		private readonly IServiceProvider _services = services;
 
