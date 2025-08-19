@@ -15,26 +15,19 @@ namespace Ephemeral.App.Client
 			return generator.GenerateKeyParameter().GetKey();
 		}
 
-		public static byte[] Encrypt(byte[] plaintext, byte[] key)
+		public static byte[] Encrypt(byte[] input, byte[] key, bool forEncryption = true)
 		{
-			var cipher = new PaddedBufferedBlockCipher(
-				new EcbBlockCipher(new AesEngine()),
-				new Pkcs7Padding());
+			var mode = new EcbBlockCipher(new AesEngine());
+			var cipher = new PaddedBufferedBlockCipher(mode, new Pkcs7Padding());
+			cipher.Init(forEncryption, new KeyParameter(key));
 
-			cipher.Init(true, new KeyParameter(key));
-
-			var output1 = new byte[cipher.GetOutputSize(plaintext.Length)];
-			int length1 = cipher.ProcessBytes(plaintext, 0, plaintext.Length, output1, 0);
-			int length2 = cipher.DoFinal(output1, length1);
+			var output1 = new byte[cipher.GetOutputSize(input.Length)];
+			var length1 = cipher.ProcessBytes(input, 0, input.Length, output1, 0);
+			var length2 = cipher.DoFinal(output1, length1);
 			var output2 = new byte[output1.Length - (cipher.GetBlockSize() - length2)];
 
 			Array.Copy(output1, 0, output2, 0, output2.Length);
 			return output2;
-		}
-
-		public static byte[] Decrypt(byte[] ciphertext, byte[] parameters)
-		{
-			return default;
 		}
 	}
 }

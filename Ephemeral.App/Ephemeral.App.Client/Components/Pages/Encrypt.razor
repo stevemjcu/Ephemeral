@@ -6,21 +6,28 @@
 
 <PageTitle>Encrypt Secret</PageTitle>
 
-<Submission Label="Encrypt a secret to get a single-use link." Action=EncryptSecret />
+<Submission Label="Encrypt a secret to get a temporary single-use link." Action=EncryptSecret />
 
 @code {
 	private int DefaultLifetimeSeconds => int.Parse(Configuration["DefaultLifetimeSeconds"]!);
 
 	private async Task<string> EncryptSecret(string plaintext)
 	{
-		var key = Crypto.GenerateKey();
-		var output = Crypto.Encrypt(Encoding.UTF8.GetBytes(plaintext), key);
-		var id = await Api.SecretsPOSTAsync(plaintext, DefaultLifetimeSeconds);
+		// 1. Use UTF8 to encode original string as binary data then encrypt
+		// 2. Use Base64 to encode binary data as string
 
+		var plaintextEncoded = Encoding.UTF8.GetBytes(plaintext);
+		var key = Crypto.GenerateKey();
+		var ciphertext = Crypto.Encrypt(plaintextEncoded, key);
+
+		var keyEncoded = Convert.ToBase64String(key);
+		var ciphertextEncoded = Convert.ToBase64String(ciphertext);
+
+		var id = await Api.SecretsPOSTAsync(ciphertextEncoded, DefaultLifetimeSeconds);
 		var builder = new UriBuilder(NavigationManager.BaseUri)
 		{
 			Path = $"/decrypt/{id}",
-			Fragment = Convert.ToBase64String(key),
+			Fragment = keyEncoded,
 		};
 		return builder.Uri.ToString();
 	}

@@ -5,16 +5,24 @@
 
 <PageTitle>Decrypt Secret</PageTitle>
 
-<Submission Label="Decrypt the secret to view its contents." Value=... Action=DecryptSecret />
+<Submission Label="Decrypt the secret to view its contents." Value=***** Action=DecryptSecret />
 
 @code {
 	[Parameter] public required string Id { get; set; }
 
 	private async Task<string> DecryptSecret(string _)
 	{
-		var data = await Api.SecretsGETAsync(new(Id));
-		var key = Convert.FromBase64String(new Uri(NavigationManager.Uri).Fragment[1..]);
+		// 1. Use Base64 to decode string as binary data then decrypt
+		// 2. Use UTF8 to decode binary data as original string
 
-		return data; /* Encoding.UTF8.GetString(Crypto.Decrypt(data, key)); */
+		var ret = await Api.SecretsGETAsync(new(Id));
+		var ciphertextEncoded = (ret)[1..^1]; // strip quotes
+		var keyEncoded = new Uri(NavigationManager.Uri).Fragment[1..]; // strip '#'
+
+		var ciphertext = Convert.FromBase64String(ciphertextEncoded);
+		var key = Convert.FromBase64String(keyEncoded);
+
+		var plaintextEncoded = Crypto.Encrypt(ciphertext, key, false);
+		return Encoding.UTF8.GetString(plaintextEncoded);
 	}
 }

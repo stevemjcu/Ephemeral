@@ -8,11 +8,10 @@
 </div>
 
 @code {
-	[Parameter] public string Label { get; set; } = "Label";
+	[Parameter] public required string Label { get; set; }
 	[Parameter] public string Value { get; set; } = string.Empty;
 	[Parameter] public required Func<string, Task<string>> Action { get; set; }
-
-	private bool IsDisabled { get; set; } = false;
+	[Parameter] public bool IsDisabled { get; set; } = false;
 
 	private async Task OnSubmit()
 	{
