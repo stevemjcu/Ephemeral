@@ -1,28 +1,36 @@
 ﻿@page "/decrypt/{id}"
 @using System.Text
+@using System.Text.Json
 @inject Api Api
 @inject NavigationManager NavigationManager
 
 <PageTitle>Decrypt Secret</PageTitle>
 
-<Submission Label="Decrypt the secret to view its contents." Value=***** Action=DecryptSecret />
+<Submission Description="Decrypt the secret to view its contents." Value=@CiphertextEncoded Label="Decrypt" Action=DecryptSecret />
 
 @code {
 	[Parameter] public required string Id { get; set; }
 
+	public required string KeyEncoded { get; set; }
+	public required string CiphertextEncoded { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		KeyEncoded = new Uri(NavigationManager.Uri).Fragment[1..];
+		CiphertextEncoded = JsonSerializer.Deserialize<string>(await Api.SecretsGETAsync(new(Id)))!;
+	}
+
+#pragma warning disable CS1998
 	private async Task<string> DecryptSecret(string _)
 	{
 		// 1. Use Base64 to decode string as binary data then decrypt
 		// 2. Use UTF8 to decode binary data as original string
 
-		var ret = await Api.SecretsGETAsync(new(Id));
-		var ciphertextEncoded = (ret)[1..^1]; // strip quotes
-		var keyEncoded = new Uri(NavigationManager.Uri).Fragment[1..]; // strip '#'
-
-		var ciphertext = Convert.FromBase64String(ciphertextEncoded);
-		var key = Convert.FromBase64String(keyEncoded);
+		var key = Convert.FromBase64String(KeyEncoded);
+		var ciphertext = Convert.FromBase64String(CiphertextEncoded);
 
 		var plaintextEncoded = Crypto.Encrypt(ciphertext, key, false);
 		return Encoding.UTF8.GetString(plaintextEncoded);
 	}
+#pragma warning restore CS1998
 }

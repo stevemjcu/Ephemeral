@@ -6,7 +6,7 @@
 
 <PageTitle>Encrypt Secret</PageTitle>
 
-<Submission Label="Encrypt a secret to get a temporary single-use link." Action=EncryptSecret />
+<Submission Description="Encrypt a secret to get a temporary single-use link." Label="Encrypt" Action=EncryptSecret />
 
 @code {
 	private int DefaultLifetimeSeconds => int.Parse(Configuration["DefaultLifetimeSeconds"]!);
