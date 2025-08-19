@@ -7,6 +7,7 @@ const int maxLifetime = (int)TimeSpan.SecondsPerDay;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("Secrets");
 var frontendUri = builder.Configuration["FrontendUri"]!;
 var cleanupInterval = TimeSpan.FromSeconds(int.Parse(builder.Configuration["CleanupIntervalSeconds"]!));
 
@@ -18,7 +19,7 @@ builder.Services.AddCors(
 			.AllowAnyHeader()));
 
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<SecretDb>(options => options.UseInMemoryDatabase("Secrets"));
+builder.Services.AddSqlite<SecretDb>(connectionString);
 builder.Services.AddHostedService(provider => new SecretCleanupJob(provider, cleanupInterval));
 
 var app = builder.Build();
