@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <OpenApiReference Include="OpenAPIs\v1.json" ClassName="Api">
+    <OpenApiReference Include="OpenAPIs\v1.json" ClassName="SecretsApi">
       <SourceUri>https://localhost:7133/openapi/v1.json</SourceUri>
     </OpenApiReference>
   </ItemGroup>
