@@ -13,7 +13,7 @@
     "/secrets": {
       "post": {
         "tags": [
-          "Ephemeral.Api"
+          "Program"
         ],
         "summary": "Conceal a secret",
         "description": "Sets a secret with the specified ciphertext and time-to-live",
@@ -31,8 +31,8 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+              "type": "string"
             }
           }
         ],
@@ -54,7 +54,7 @@
     "/secrets/{id}": {
       "get": {
         "tags": [
-          "Ephemeral.Api"
+          "Program"
         ],
         "summary": "Reveal a secret",
         "description": "Gets a secret if it still exists and is unexpired",
@@ -87,7 +87,7 @@
   "components": { },
   "tags": [
     {
-      "name": "Ephemeral.Api"
+      "name": "Program"
     }
   ]
 }
