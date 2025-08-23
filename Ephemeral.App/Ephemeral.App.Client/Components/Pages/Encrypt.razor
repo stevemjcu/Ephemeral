@@ -19,7 +19,6 @@
 		var plaintextEncoded = Encoding.UTF8.GetBytes(plaintext);
 		var key = Crypto.GenerateKey();
 		var ciphertext = Crypto.Encrypt(plaintextEncoded, key);
-
 		var keyEncoded = Convert.ToBase64String(key);
 		var ciphertextEncoded = Convert.ToBase64String(ciphertext);
 
@@ -29,6 +28,7 @@
 			Path = $"/decrypt/{id}",
 			Fragment = keyEncoded,
 		};
+
 		return builder.Uri.ToString();
 	}
 }

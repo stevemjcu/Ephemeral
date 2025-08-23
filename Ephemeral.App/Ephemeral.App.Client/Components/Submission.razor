@@ -1,10 +1,12 @@
 ﻿@inject IJSRuntime JSRuntime
 
-<div>
-	<label for="box">@Description</label><br>
-	<textarea id="input" rows="6" cols="50" disabled="@IsDisabled" @bind=Value /><br>
-	<button id="submit" type="button" disabled="@IsDisabled" @onclick="OnSubmit">@Label</button>
-	<button id="copy" @onclick="OnCopy">Copy</button>
+<div class="centered">
+	<div>
+		<label for="box">@Description</label><br>
+		<textarea id="input" rows="6" cols="50" disabled="@IsDisabled" @bind=Value /><br>
+		<button id="submit" type="button" disabled="@IsDisabled" @onclick="OnSubmit">@Label</button>
+		<button id="copy" @onclick="OnCopy">Copy</button>
+	</div>
 </div>
 
 @code {

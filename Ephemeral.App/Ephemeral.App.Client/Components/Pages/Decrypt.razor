@@ -20,17 +20,15 @@
 		CiphertextEncoded = JsonSerializer.Deserialize<string>(await Api.SecretsGETAsync(new(Id)))!;
 	}
 
-#pragma warning disable CS1998
-	private async Task<string> DecryptSecret(string _)
+	private Task<string> DecryptSecret(string _)
 	{
 		// 1. Use Base64 to decode string as binary data then decrypt
 		// 2. Use UTF8 to decode binary data as original string
 
 		var key = Convert.FromBase64String(KeyEncoded);
 		var ciphertext = Convert.FromBase64String(CiphertextEncoded);
-
 		var plaintextEncoded = Crypto.Encrypt(ciphertext, key, false);
-		return Encoding.UTF8.GetString(plaintextEncoded);
+
+		return Task.FromResult(Encoding.UTF8.GetString(plaintextEncoded));
 	}
-#pragma warning restore CS1998
 }
