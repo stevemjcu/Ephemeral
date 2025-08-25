@@ -1,5 +1,6 @@
 using Ephemeral.App.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
 
 internal class Program
 {
@@ -9,6 +10,7 @@ internal class Program
 
 		var backendUri = new Uri(builder.Configuration["BackendUri"]!);
 
+		builder.Services.AddMudServices();
 		builder.Services.AddScoped(sp =>
 			new SecretsApi(new()
 			{
