@@ -1,18 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider />
+<MudThemeProvider IsDarkMode=true />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<header class="centered">
-    <a href="/"><h1>Ephemeral</h1></a>
-</header>
-
-@Body
+<MudLayout>
+	<MudMainContent>
+		<MudContainer MaxWidth="MaxWidth.Small">
+			@Body
+		</MudContainer>
+	</MudMainContent>
+</MudLayout>
 
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+	An unhandled error has occurred.
+	<a href="." class="reload">Reload</a>
+	<span class="dismiss">🗙</span>
 </div>

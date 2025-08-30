@@ -6,7 +6,10 @@
 
 <PageTitle>Encrypt Secret</PageTitle>
 
-<Submission Description="Encrypt a secret to get a temporary single-use link." Label="Encrypt" Action=EncryptSecret />
+<Submission Label="Encrypt"
+			Icon=@Icons.Material.Filled.Lock
+			Description="Encrypt a secret for a temporary single-use link."
+			Action=EncryptSecret />
 
 @code {
 	private TimeSpan DefaultLifetime => TimeSpan.Parse(Configuration["DefaultLifetime"]!);

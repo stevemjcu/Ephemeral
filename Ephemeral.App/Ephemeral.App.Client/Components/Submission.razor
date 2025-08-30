@@ -1,25 +1,48 @@
 ﻿@inject IJSRuntime JSRuntime
 
-<div class="centered">
-	<div>
-		<label for="box">@Description</label><br>
-		<textarea id="input" rows="6" cols="50" disabled="@IsDisabled" @bind=Value /><br>
-		<button id="submit" type="button" disabled="@IsDisabled" @onclick="OnSubmit">@Label</button>
-		<button id="copy" @onclick="OnCopy">Copy</button>
-	</div>
-</div>
+<style>
+	.mud-breadcrumbs {
+		font-size: 1.5rem;
+	}
+</style>
+
+<header>
+	<MudBreadcrumbs Items="Title" Separator=">"></MudBreadcrumbs>
+</header>
+<br />
+
+<MudCard>
+	<MudCardContent>
+		<MudText>@Description</MudText><br />
+		<MudTextField @bind-Value="Value" @bind-Disabled="IsTextAreaDisabled" T="string" Variant="Variant.Outlined" Lines="4" />
+	</MudCardContent>
+	<MudCardActions>
+		<MudIconButton @bind-Disabled="IsActionDisabled" Color="@Color.Primary" Icon="@Icon" aria-label="@Label" @onclick="OnSubmit" />
+		<MudIconButton Color="@Color.Primary" Icon="@Icons.Material.Filled.ContentCopy" aria-label="Copy" @onclick="OnCopy" />
+	</MudCardActions>
+</MudCard>
 
 @code {
-	[Parameter] public required string Description { get; set; }
-	[Parameter] public string Value { get; set; } = string.Empty;
 	[Parameter] public required string Label { get; set; }
+	[Parameter] public required string Icon { get; set; }
+	[Parameter] public required string Description { get; set; }
 	[Parameter] public required Func<string, Task<string>> Action { get; set; }
-	[Parameter] public bool IsDisabled { get; set; } = false;
+	[Parameter] public string Value { get; set; } = string.Empty;
+	[Parameter] public bool IsTextAreaDisabled { get; set; } = false;
+
+	public bool IsActionDisabled { get; set; } = false;
+
+	public List<BreadcrumbItem> Title =>
+	[
+		new BreadcrumbItem("Ephemeral", "/"),
+		new BreadcrumbItem(Label, null, disabled: true)
+	];
 
 	private async Task OnSubmit()
 	{
 		Value = await Action.Invoke(Value);
-		IsDisabled = true;
+		IsTextAreaDisabled = true;
+		IsActionDisabled = true;
 	}
 
 	private async Task OnCopy() =>
