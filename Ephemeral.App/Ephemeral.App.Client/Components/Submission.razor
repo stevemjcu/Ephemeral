@@ -1,48 +1,31 @@
 ﻿@inject IJSRuntime JSRuntime
 
-<style>
-	.mud-breadcrumbs {
-		font-size: 1.5rem;
-	}
-</style>
-
-<header>
-	<MudBreadcrumbs Items="Title" Separator=">"></MudBreadcrumbs>
-</header>
-<br />
-
 <MudCard>
 	<MudCardContent>
-		<MudText>@Description</MudText><br />
-		<MudTextField @bind-Value="Value" @bind-Disabled="IsTextAreaDisabled" T="string" Variant="Variant.Outlined" Lines="4" />
+		<MudText>@Description</MudText>
+		<br />
+		<MudTextField T="string" Variant="Variant.Outlined" Lines="4" @bind-Value="Value" @bind-Disabled="IsReadOnly" />
 	</MudCardContent>
 	<MudCardActions>
-		<MudIconButton @bind-Disabled="IsActionDisabled" Color="@Color.Primary" Icon="@Icon" aria-label="@Label" @onclick="OnSubmit" />
-		<MudIconButton Color="@Color.Primary" Icon="@Icons.Material.Filled.ContentCopy" aria-label="Copy" @onclick="OnCopy" />
+		<MudIconButton Color="@Color.Primary" Icon="@Icon" OnClick="OnSubmit" @bind-Disabled="IsDisabled" aria-label="@Name" />
+		<MudIconButton Color="@Color.Primary" Icon="@Icons.Material.Filled.ContentCopy" OnClick="OnCopy" aria-label="Copy" />
 	</MudCardActions>
 </MudCard>
 
 @code {
-	[Parameter] public required string Label { get; set; }
-	[Parameter] public required string Icon { get; set; }
+	[Parameter] public required string Name { get; set; }
 	[Parameter] public required string Description { get; set; }
+	[Parameter] public required string Icon { get; set; }
 	[Parameter] public required Func<string, Task<string>> Action { get; set; }
 	[Parameter] public string Value { get; set; } = string.Empty;
-	[Parameter] public bool IsTextAreaDisabled { get; set; } = false;
+	[Parameter] public bool IsReadOnly { get; set; } = false;
 
-	public bool IsActionDisabled { get; set; } = false;
-
-	public List<BreadcrumbItem> Title =>
-	[
-		new BreadcrumbItem("Ephemeral", "/"),
-		new BreadcrumbItem(Label, null, disabled: true)
-	];
+	public bool IsDisabled { get; set; } = false;
 
 	private async Task OnSubmit()
 	{
 		Value = await Action.Invoke(Value);
-		IsTextAreaDisabled = true;
-		IsActionDisabled = true;
+		(IsReadOnly, IsDisabled) = (true, true);
 	}
 
 	private async Task OnCopy() =>
