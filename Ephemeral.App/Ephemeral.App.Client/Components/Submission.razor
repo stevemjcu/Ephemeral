@@ -7,8 +7,8 @@
 		<MudTextField T="string" Variant="Variant.Outlined" Lines="4" @bind-Value="Value" @bind-Disabled="IsReadOnly" />
 	</MudCardContent>
 	<MudCardActions>
-		<MudIconButton Color="@Color.Primary" Icon="@Icon" OnClick="OnSubmit" @bind-Disabled="IsDisabled" aria-label="@Name" />
-		<MudIconButton Color="@Color.Primary" Icon="@Icons.Material.Filled.ContentCopy" OnClick="OnCopy" aria-label="Copy" />
+		<MudTooltip Text="@Name" Delay="1000"><MudIconButton Color="@Color.Primary" Icon="@Icon" OnClick="OnSubmit" @bind-Disabled="IsDisabled" aria-label="@Name" /></MudTooltip>
+		<MudTooltip Text="Copy" Delay="1000"><MudIconButton Color="@Color.Primary" Icon="@Icons.Material.Filled.ContentCopy" OnClick="OnCopy" aria-label="Copy" /></MudTooltip>
 	</MudCardActions>
 </MudCard>
 
