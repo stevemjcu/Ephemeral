@@ -5,9 +5,9 @@ VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ephemeral.Api", "Ephemeral.Api\Ephemeral.Api.csproj", "{8FDB4ACF-2FEE-4C0F-AA99-EDDC65583BF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ephemeral.App", "Ephemeral.App\Ephemeral.App\Ephemeral.App.csproj", "{66BFCF0B-CE4A-4BE4-8CCA-EFF45168FABA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ephemeral.App", "Ephemeral.App\Ephemeral.App.csproj", "{66BFCF0B-CE4A-4BE4-8CCA-EFF45168FABA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ephemeral.App.Client", "Ephemeral.App\Ephemeral.App.Client\Ephemeral.App.Client.csproj", "{03988CB7-223B-4251-931F-7155460F4A72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ephemeral.App.Client", "Ephemeral.App.Client\Ephemeral.App.Client.csproj", "{03988CB7-223B-4251-931F-7155460F4A72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

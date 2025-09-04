@@ -10,12 +10,13 @@ internal class Program
 
 		var backendUri = new Uri(builder.Configuration["BackendUri"]!);
 
-		builder.Services.AddMudServices();
-		builder.Services.AddScoped(sp =>
-			new SecretsApi(new()
-			{
-				BaseAddress = backendUri
-			}));
+		builder.Services
+			.AddMudServices()
+			.AddScoped(sp =>
+				new SecretsApi(new()
+				{
+					BaseAddress = backendUri
+				}));
 
 		await builder.Build().RunAsync();
 	}
